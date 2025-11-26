@@ -19,7 +19,7 @@ public:
         }
     };
 
-    [[nodiscard]] static auto create(const Window& window, std::string_view appName, bool enableValidation)
+    [[nodiscard]] static auto create(const Window& window, const std::string& appName, bool enableValidation)
         -> Result<VulkanContext>;
     ~VulkanContext();
 
@@ -40,9 +40,9 @@ public:
 
 private:
     VulkanContext() = default;
-    [[nodiscard]] auto initialize(const Window& window, std::string_view appName, bool enableValidation) noexcept -> VoidResult;
+    [[nodiscard]] auto initialize(const Window& window, const std::string& appName, bool enableValidation) noexcept -> VoidResult;
 
-    [[nodiscard]] auto createInstance(std::string_view appName) noexcept -> VoidResult;
+    [[nodiscard]] auto createInstance(const std::string& appName) noexcept -> VoidResult;
     [[nodiscard]] auto setupDebugMessenger() noexcept -> VoidResult;
     [[nodiscard]] auto createSurface(const Window& window) noexcept -> VoidResult;
     [[nodiscard]] auto pickPhysicalDevice() noexcept -> VoidResult;

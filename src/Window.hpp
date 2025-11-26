@@ -22,7 +22,7 @@ class Window {
 public:
     using ResizeCallback = std::function<void(uint32_t, uint32_t)>;
 
-    [[nodiscard]] static auto create(std::string_view title, uint32_t width, uint32_t height)
+    [[nodiscard]] static auto create(const std::string& title, uint32_t width, uint32_t height)
         -> Result<Window>;
     ~Window();
 
@@ -46,8 +46,8 @@ public:
     void setResizeCallback(ResizeCallback callback) { m_resizeCallback = std::move(callback); }
 
 private:
-    Window(std::string_view title, uint32_t width, uint32_t height);
-    [[nodiscard]] auto initialize(std::string_view title) noexcept -> VoidResult;
+    Window(const std::string& title, uint32_t width, uint32_t height);
+    [[nodiscard]] auto initialize(const std::string& title) noexcept -> VoidResult;
     static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
     GLFWwindowPtr m_window;

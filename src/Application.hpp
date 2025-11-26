@@ -10,7 +10,7 @@ class VulkanContext;
 class Application {
 public:
     struct Config {
-        std::string_view applicationName{"Keuzedeel"};
+        std::string applicationName{"Virtual Geometry"};
         uint32_t windowWidth{1280};
         uint32_t windowHeight{720};
         bool enableValidationLayers{true};

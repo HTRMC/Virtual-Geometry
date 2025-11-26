@@ -2,7 +2,7 @@
 #include "Logger.hpp"
 #include <format>
 
-auto Window::create(std::string_view title, uint32_t width, uint32_t height)
+auto Window::create(const std::string& title, uint32_t width, uint32_t height)
     -> Result<Window> {
     Window window(title, width, height);
 
@@ -13,10 +13,10 @@ auto Window::create(std::string_view title, uint32_t width, uint32_t height)
     return window;
 }
 
-Window::Window(std::string_view title, uint32_t width, uint32_t height)
+Window::Window(const std::string& title, uint32_t width, uint32_t height)
     : m_width(width), m_height(height) {}
 
-auto Window::initialize(std::string_view title) noexcept -> VoidResult {
+auto Window::initialize(const std::string& title) noexcept -> VoidResult {
     if (!glfwInit()) {
         return std::unexpected(makeError(
             ErrorCode::InitializationFailed,
@@ -30,7 +30,7 @@ auto Window::initialize(std::string_view title) noexcept -> VoidResult {
     GLFWwindow* rawWindow = glfwCreateWindow(
         static_cast<int>(m_width),
         static_cast<int>(m_height),
-        title.data(),
+        title.c_str(),
         nullptr,
         nullptr
     );
