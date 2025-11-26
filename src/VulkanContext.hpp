@@ -67,6 +67,6 @@ private:
     VkQueue m_graphicsQueue{VK_NULL_HANDLE};
     VkQueue m_presentQueue{VK_NULL_HANDLE};
 
-    bool m_enableValidationLayers;
+    bool m_enableValidationLayers{false};
     std::vector<const char*> m_validationLayers{"VK_LAYER_KHRONOS_validation"};
 };
