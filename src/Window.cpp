@@ -79,11 +79,21 @@ auto Window::getRequiredExtensions() const -> std::vector<const char*> {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
+    // Check if Vulkan is available
+    if (!glfwExtensions) {
+        return {};
+    }
+
     return std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
 }
 
 void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto* windowPtr = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+    // Validate window pointer
+    if (!windowPtr) {
+        return;
+    }
 
     // Validate dimensions - GLFW can pass negative or zero values during minimization
     if (width <= 0 || height <= 0) {
