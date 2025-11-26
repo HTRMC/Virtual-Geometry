@@ -1,0 +1,77 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# IDE directories
+.vs/
+.vscode/
+.idea/
+
+# Compiled object files
+*.o
+*.obj
+*.ko
+*.elf
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Dependencies
+_deps/
+vcpkg_installed/
+
+# Tracy profiler
+*.tracy
+
+# Log files
+*.log
