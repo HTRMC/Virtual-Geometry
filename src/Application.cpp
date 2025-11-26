@@ -6,6 +6,7 @@
 #include <chrono>
 
 auto Application::create(const Config& config) -> Result<Application> {
+    ZoneScoped;
     Application app;
 
     if (auto result = app.initialize(config); !result) {
@@ -16,6 +17,7 @@ auto Application::create(const Config& config) -> Result<Application> {
 }
 
 auto Application::initialize(const Config& config) -> VoidResult {
+    ZoneScoped;
     Logger::init();
     Logger::info("Initializing application: {}", config.applicationName);
 
@@ -48,11 +50,13 @@ auto Application::initialize(const Config& config) -> VoidResult {
 }
 
 Application::~Application() {
+    ZoneScoped;
     Logger::info("Shutting down application");
     shutdown();
 }
 
 auto Application::run() -> int {
+    ZoneScoped;
     Logger::info("Starting main loop");
 
     mainLoop();
@@ -60,17 +64,25 @@ auto Application::run() -> int {
 }
 
 void Application::mainLoop() {
+    ZoneScoped;
     using Clock = std::chrono::high_resolution_clock;
     using Duration = std::chrono::duration<float>;
 
     auto lastFrameTime = Clock::now();
 
     while (m_isRunning && !m_window->shouldClose()) {
+        ZoneScopedN("Frame");
+        FrameMark;
+
         const auto currentTime = Clock::now();
         const float deltaTime = Duration(currentTime - lastFrameTime).count();
         lastFrameTime = currentTime;
 
-        m_window->pollEvents();
+        {
+            ZoneScopedN("Poll Events");
+            m_window->pollEvents();
+        }
+
         update(deltaTime);
         render();
     }
@@ -79,10 +91,12 @@ void Application::mainLoop() {
 }
 
 void Application::update([[maybe_unused]] float deltaTime) {
+    ZoneScoped;
     // Update logic will go here
 }
 
 void Application::render() {
+    ZoneScoped;
     if (auto result = m_vulkanContext->beginFrame(); result) {
         // Render commands will go here
         m_vulkanContext->endFrame();
@@ -90,6 +104,7 @@ void Application::render() {
 }
 
 void Application::shutdown() noexcept {
+    ZoneScoped;
     m_isRunning = false;
 
     if (m_vulkanContext) {

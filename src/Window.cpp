@@ -1,9 +1,11 @@
 #include "Window.hpp"
 #include "Logger.hpp"
+#include <tracy/Tracy.hpp>
 #include <format>
 
 auto Window::create(const std::string& title, uint32_t width, uint32_t height)
     -> Result<Window> {
+    ZoneScoped;
     Window window(title, width, height);
 
     if (auto result = window.initialize(title); !result) {
@@ -17,6 +19,7 @@ Window::Window(const std::string& title, uint32_t width, uint32_t height)
     : m_width(width), m_height(height) {}
 
 auto Window::initialize(const std::string& title) noexcept -> VoidResult {
+    ZoneScoped;
     if (!glfwInit()) {
         return std::unexpected(makeError(
             ErrorCode::InitializationFailed,
@@ -53,6 +56,7 @@ auto Window::initialize(const std::string& title) noexcept -> VoidResult {
 }
 
 Window::~Window() {
+    ZoneScoped;
     // m_window automatically cleaned up by unique_ptr deleter
     if (m_window) {
         Logger::info("Window destroyed");
@@ -64,6 +68,7 @@ auto Window::shouldClose() const noexcept -> bool {
 }
 
 void Window::pollEvents() const noexcept {
+    ZoneScoped;
     glfwPollEvents();
 }
 
@@ -75,6 +80,7 @@ auto Window::getAspectRatio() const noexcept -> std::optional<float> {
 }
 
 auto Window::getRequiredExtensions() const -> std::vector<const char*> {
+    ZoneScoped;
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
@@ -87,6 +93,7 @@ auto Window::getRequiredExtensions() const -> std::vector<const char*> {
 }
 
 void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+    ZoneScoped;
     auto* windowPtr = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
     // Validate window pointer

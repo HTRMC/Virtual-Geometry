@@ -75,3 +75,4 @@ vcpkg_installed/
 
 # Log files
 *.log
+/.claude

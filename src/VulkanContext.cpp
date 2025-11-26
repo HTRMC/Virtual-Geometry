@@ -1,11 +1,13 @@
 #include "VulkanContext.hpp"
 #include "Window.hpp"
 #include "Logger.hpp"
+#include <tracy/Tracy.hpp>
 #include <set>
 #include <format>
 
 auto VulkanContext::create(const Window& window, const std::string& appName, bool enableValidation)
     -> Result<VulkanContext> {
+    ZoneScoped;
     VulkanContext context;
     context.m_enableValidationLayers = enableValidation;
 
@@ -18,6 +20,7 @@ auto VulkanContext::create(const Window& window, const std::string& appName, boo
 
 auto VulkanContext::initialize(const Window& window, const std::string& appName, bool enableValidation) noexcept
     -> VoidResult {
+    ZoneScoped;
     Logger::info("Initializing Vulkan context");
 
     if (auto result = createInstance(appName); !result) {
@@ -113,6 +116,7 @@ VulkanContext& VulkanContext::operator=(VulkanContext&& other) noexcept {
 }
 
 VulkanContext::~VulkanContext() {
+    ZoneScoped;
     if (m_device != VK_NULL_HANDLE) {
         vkDestroyDevice(m_device, nullptr);
     }
@@ -138,10 +142,18 @@ VulkanContext::~VulkanContext() {
 }
 
 auto VulkanContext::createInstance(const std::string& appName) noexcept -> VoidResult {
+    ZoneScoped;
     if (m_enableValidationLayers && !checkValidationLayerSupport()) {
         return std::unexpected(makeError(
             ErrorCode::ValidationLayersNotAvailable,
             "Validation layers requested but not available"
+        ));
+    }
+
+    if (!glfwVulkanSupported()) {
+        return std::unexpected(makeError(
+            ErrorCode::VulkanInstanceCreationFailed,
+            "Vulkan is not supported on this system"
         ));
     }
 
@@ -159,6 +171,13 @@ auto VulkanContext::createInstance(const std::string& appName) noexcept -> VoidR
 
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    if (!glfwExtensions) {
+        return std::unexpected(makeError(
+            ErrorCode::VulkanInstanceCreationFailed,
+            "Failed to get required Vulkan extensions from GLFW. Vulkan may not be available."
+        ));
+    }
 
     std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
@@ -188,6 +207,7 @@ auto VulkanContext::createInstance(const std::string& appName) noexcept -> VoidR
 }
 
 auto VulkanContext::setupDebugMessenger() noexcept -> VoidResult {
+    ZoneScoped;
     if (!m_enableValidationLayers) {
         return {};
     }
@@ -219,6 +239,7 @@ auto VulkanContext::setupDebugMessenger() noexcept -> VoidResult {
 }
 
 auto VulkanContext::createSurface(const Window& window) noexcept -> VoidResult {
+    ZoneScoped;
     if (glfwCreateWindowSurface(m_instance, window.getHandle(), nullptr, &m_surface) != VK_SUCCESS) {
         return std::unexpected(makeError(
             ErrorCode::SurfaceCreationFailed,
@@ -230,6 +251,7 @@ auto VulkanContext::createSurface(const Window& window) noexcept -> VoidResult {
 }
 
 auto VulkanContext::pickPhysicalDevice() noexcept -> VoidResult {
+    ZoneScoped;
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
 
@@ -265,6 +287,7 @@ auto VulkanContext::pickPhysicalDevice() noexcept -> VoidResult {
 }
 
 auto VulkanContext::createLogicalDevice() noexcept -> VoidResult {
+    ZoneScoped;
     auto indices = findQueueFamilies(m_physicalDevice);
 
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -314,6 +337,7 @@ auto VulkanContext::createLogicalDevice() noexcept -> VoidResult {
 }
 
 auto VulkanContext::checkValidationLayerSupport() const -> bool {
+    ZoneScoped;
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
@@ -339,6 +363,7 @@ auto VulkanContext::checkValidationLayerSupport() const -> bool {
 }
 
 auto VulkanContext::findQueueFamilies(VkPhysicalDevice device) const -> QueueFamilyIndices {
+    ZoneScoped;
     QueueFamilyIndices indices;
 
     uint32_t queueFamilyCount = 0;
@@ -368,20 +393,24 @@ auto VulkanContext::findQueueFamilies(VkPhysicalDevice device) const -> QueueFam
 }
 
 auto VulkanContext::isDeviceSuitable(VkPhysicalDevice device) const -> bool {
+    ZoneScoped;
     auto indices = findQueueFamilies(device);
     return indices.isComplete();
 }
 
 auto VulkanContext::beginFrame() -> std::optional<uint32_t> {
+    ZoneScoped;
     // Frame rendering will be implemented here
     return std::nullopt;
 }
 
 void VulkanContext::endFrame() {
+    ZoneScoped;
     // Frame end logic will be implemented here
 }
 
 void VulkanContext::waitIdle() const {
+    ZoneScoped;
     if (m_device != VK_NULL_HANDLE) {
         vkDeviceWaitIdle(m_device);
     }
