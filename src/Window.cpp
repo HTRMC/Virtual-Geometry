@@ -68,7 +68,10 @@ void Window::pollEvents() const noexcept {
     glfwPollEvents();
 }
 
-auto Window::getAspectRatio() const noexcept -> float {
+auto Window::getAspectRatio() const noexcept -> std::optional<float> {
+    if (m_height == 0) {
+        return std::nullopt;
+    }
     return static_cast<float>(m_width) / static_cast<float>(m_height);
 }
 

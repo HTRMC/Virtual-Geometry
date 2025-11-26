@@ -7,6 +7,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <optional>
 
 struct GLFWwindowDeleter {
     void operator()(GLFWwindow* window) const noexcept {
@@ -36,7 +37,7 @@ public:
 
     [[nodiscard]] auto getWidth() const noexcept -> uint32_t { return m_width; }
     [[nodiscard]] auto getHeight() const noexcept -> uint32_t { return m_height; }
-    [[nodiscard]] auto getAspectRatio() const noexcept -> float;
+    [[nodiscard]] auto getAspectRatio() const noexcept -> std::optional<float>;
     [[nodiscard]] auto wasResized() const noexcept -> bool { return m_framebufferResized; }
     void resetResizedFlag() noexcept { m_framebufferResized = false; }
 
