@@ -2,6 +2,7 @@
 #include "Window.hpp"
 #include "VulkanContext.hpp"
 #include "Logger.hpp"
+#include <tracy/Tracy.hpp>
 #include <chrono>
 
 auto Application::create(const Config& config) -> Result<Application> {
@@ -95,5 +96,8 @@ void Application::shutdown() noexcept {
         m_vulkanContext->waitIdle();
     }
 
-    glfwTerminate();
+    // Only terminate GLFW if we own resources (not moved-from)
+    if (m_window) {
+        glfwTerminate();
+    }
 }
