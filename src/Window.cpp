@@ -55,7 +55,6 @@ auto Window::initialize(const std::string& title) noexcept -> VoidResult {
 Window::~Window() {
     // m_window automatically cleaned up by unique_ptr deleter
     if (m_window) {
-        glfwTerminate();
         Logger::info("Window destroyed");
     }
 }
