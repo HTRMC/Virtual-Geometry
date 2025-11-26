@@ -94,4 +94,6 @@ void Application::shutdown() noexcept {
     if (m_vulkanContext) {
         m_vulkanContext->waitIdle();
     }
+
+    glfwTerminate();
 }
