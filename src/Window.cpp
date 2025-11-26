@@ -82,6 +82,13 @@ auto Window::getRequiredExtensions() const -> std::vector<const char*> {
 void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto* windowPtr = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
+    // Validate dimensions - GLFW can pass negative or zero values during minimization
+    if (width <= 0 || height <= 0) {
+        Logger::debug("Window minimized or invalid dimensions: {}x{}", width, height);
+        windowPtr->m_framebufferResized = true;
+        return;
+    }
+
     windowPtr->m_width = static_cast<uint32_t>(width);
     windowPtr->m_height = static_cast<uint32_t>(height);
     windowPtr->m_framebufferResized = true;
